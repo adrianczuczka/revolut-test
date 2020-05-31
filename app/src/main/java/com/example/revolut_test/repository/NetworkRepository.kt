@@ -5,14 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.example.revolut_test.model.Currency
 import com.example.revolut_test.model.CurrencyNetworkResponse
 import com.example.revolut_test.network.NetworkService
-import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class NetworkRepository @Inject constructor(
     private val networkService: NetworkService
 ) {
-    private val _liveData = MutableLiveData<List<Currency>>()
-    val liveData: LiveData<List<Currency>> = _liveData
+    private val _currenciesLiveData = MutableLiveData<List<Currency>>()
+    val currenciesLiveData: LiveData<List<Currency>> = _currenciesLiveData
 
-    fun getCurrencies(base: String): Observable<CurrencyNetworkResponse> = networkService.getCurrencies(base)
+    fun getCurrencies(base: String): Flowable<CurrencyNetworkResponse> = networkService.getCurrencies(base)
 }

@@ -4,7 +4,7 @@ import android.app.Application
 import com.example.revolut_test.MainActivity
 import dagger.Component
 
-@Component
+@Component(modules = [NetworkModule::class])
 interface ApplicationComponent {
     fun inject(mainActivity: MainActivity)
 }
