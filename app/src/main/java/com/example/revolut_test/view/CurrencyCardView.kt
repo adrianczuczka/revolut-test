@@ -21,6 +21,7 @@ class CurrencyCardView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attributeSet, defStyleAttr) {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private var textWatcher: TextWatcher? = null
 
     init {
         LayoutInflater
@@ -28,9 +29,13 @@ class CurrencyCardView @JvmOverloads constructor(
                 .inflate(R.layout.view_currency_card_merge, this, true)
     }
 
-    fun bind(data: CurrencyCardViewData, amountsUpdater: BehaviorSubject<String>) {
+    fun bind(data: CurrencyCardViewData, onCardClick: (CurrencyCardViewData) -> Unit, amountsUpdater: BehaviorSubject<String>) {
         currencyCardViewTitleTextView.text = data.title
         currencyCardViewSubtitleTextView.text = data.subtitle
+        setOnClickListener {
+            onCardClick.invoke(data)
+            currencyCardViewAmountEditText.requestFocus()
+        }
         compositeDisposable.add(
                 amountsUpdater
                         .subscribeOn(Schedulers.io())
@@ -48,21 +53,18 @@ class CurrencyCardView @JvmOverloads constructor(
                             }
                         }
         )
-        currencyCardViewAmountEditText.addTextChangedListener(object : TextWatcher {
+        textWatcher = object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val adjustedAmount = p0?.toString()?.toDoubleOrNull()?.div(data.rate)
                 if (currencyCardViewAmountEditText.hasFocus()) {
-                    amountsUpdater.onNext(p0?.toString() ?: "")
+                    amountsUpdater.onNext(adjustedAmount?.toString() ?: "")
                 }
             }
 
             override fun afterTextChanged(p0: Editable?) {}
-        })
+        }
+        currencyCardViewAmountEditText.addTextChangedListener(textWatcher)
         Glide.with(this).load(data.flag).into(currencyCardViewCountryImageView)
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        compositeDisposable.clear()
     }
 }

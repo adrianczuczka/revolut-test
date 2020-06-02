@@ -35,9 +35,9 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
     override fun getItemCount(): Int = currencies.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-            (holder as CurrencyViewHolder).bind(currencies[position], ::moveItem, amountsUpdater)
+            (holder as CurrencyViewHolder).bind(currencies[position], ::focusItem, amountsUpdater)
 
-    private fun moveItem(data: CurrencyCardViewData) {
+    private fun focusItem(data: CurrencyCardViewData) {
         highlightedItemWithOldIndex.first?.let { it ->
             currencies.remove(it)
             currencies.add(highlightedItemWithOldIndex.second, it)
@@ -58,10 +58,7 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
             amountsUpdater: BehaviorSubject<String>
         ) {
             val orderCardView = itemView as CurrencyCardView
-            orderCardView.bind(currency, amountsUpdater)
-            orderCardView.setOnClickListener {
-                onCardClick.invoke(currency)
-            }
+            orderCardView.bind(currency, onCardClick, amountsUpdater)
         }
     }
 }
