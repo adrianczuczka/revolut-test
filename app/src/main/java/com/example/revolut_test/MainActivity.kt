@@ -16,7 +16,11 @@ class MainActivity : AppCompatActivity() {
         (applicationContext as RevolutTestApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
         viewModel.getCurrencies("EUR").observe(this, Observer {
-            println(it)
         })
+        val currencyFragment = CurrencyFragment.newInstance()
+        supportFragmentManager
+                .beginTransaction()
+                .add(R.id.containerFrameLayout, currencyFragment)
+                .commitNow()
     }
 }
