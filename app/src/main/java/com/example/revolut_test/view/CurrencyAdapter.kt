@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.revolut_test.R
 import com.example.revolut_test.util.CurrenciesDiffCallback
 import com.example.revolut_test.util.inflate
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import java.util.LinkedList
 import javax.inject.Inject
 
@@ -14,6 +15,7 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
 
     private val currencies: LinkedList<CurrencyCardViewData> = LinkedList()
     private var highlightedItemWithOldIndex: Pair<CurrencyCardViewData?, Int> = null to -1
+    private val amountsUpdater: BehaviorSubject<String> = BehaviorSubject.create()
 
     var onCardClick: (() -> Unit)? = null
 
@@ -21,6 +23,9 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
         val diff = DiffUtil.calculateDiff(CurrenciesDiffCallback(currencies, updatedCurrencies))
         currencies.clear()
         currencies.addAll(updatedCurrencies)
+        if (highlightedItemWithOldIndex.first == null) {
+            highlightedItemWithOldIndex = highlightedItemWithOldIndex.copy(updatedCurrencies.first(), 0)
+        }
         diff.dispatchUpdatesTo(this)
     }
 
@@ -30,7 +35,7 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
     override fun getItemCount(): Int = currencies.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-            (holder as CurrencyViewHolder).bind(currencies[position], ::moveItem)
+            (holder as CurrencyViewHolder).bind(currencies[position], ::moveItem, amountsUpdater)
 
     private fun moveItem(data: CurrencyCardViewData) {
         highlightedItemWithOldIndex.first?.let { it ->
@@ -47,11 +52,15 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
     }
 
     class CurrencyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(currency: CurrencyCardViewData, onCardClick: ((data: CurrencyCardViewData) -> Unit)?) {
+        fun bind(
+            currency: CurrencyCardViewData,
+            onCardClick: ((data: CurrencyCardViewData) -> Unit),
+            amountsUpdater: BehaviorSubject<String>
+        ) {
             val orderCardView = itemView as CurrencyCardView
-            orderCardView.bind(currency)
+            orderCardView.bind(currency, amountsUpdater)
             orderCardView.setOnClickListener {
-                onCardClick?.invoke(currency)
+                onCardClick.invoke(currency)
             }
         }
     }

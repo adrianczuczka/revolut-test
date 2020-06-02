@@ -49,6 +49,7 @@ dependencies {
     implementation 'com.github.blongho:worldCountryData:v1.5'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.neovisionaries:nv-i18n:1.27'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     testImplementation 'androidx.test:runner:1.2.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"

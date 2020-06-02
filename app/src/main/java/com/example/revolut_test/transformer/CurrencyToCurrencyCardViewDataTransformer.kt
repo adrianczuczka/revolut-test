@@ -18,6 +18,7 @@ class CurrencyToCurrencyCardViewDataTransformer @Inject constructor() {
         return CurrencyCardViewData(
                 androidCurrency.displayName,
                 currency.name,
+                currency.rate,
                 flag
         )
     }
