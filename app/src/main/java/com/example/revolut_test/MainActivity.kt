@@ -2,10 +2,8 @@ package com.example.revolut_test
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import com.blongho.country_data.World
 import com.example.revolut_test.injection.RevolutTestApplication
-import com.example.revolut_test.viewmodel.currencyfragment.CurrencyViewModel
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,6 +11,7 @@ class MainActivity : AppCompatActivity() {
         (applicationContext as RevolutTestApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        World.init(applicationContext)
         val currencyFragment = CurrencyFragment.newInstance()
         supportFragmentManager
                 .beginTransaction()

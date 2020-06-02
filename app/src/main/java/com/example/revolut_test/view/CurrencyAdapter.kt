@@ -12,11 +12,11 @@ import javax.inject.Inject
 
 class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val currencies: MutableList<Currency> = mutableListOf()
+    private val currencies: MutableList<CurrencyCardViewData> = mutableListOf()
 
-    var onCardClick: ((currencyName: String) -> Unit)? = null
+    private var onCardClick: ((currencyName: String) -> Unit)? = null
 
-    fun update(updatedCurrencies: List<Currency>) {
+    fun update(updatedCurrencies: List<CurrencyCardViewData>) {
         val diff = DiffUtil.calculateDiff(CurrenciesDiffCallback(currencies, updatedCurrencies))
         currencies.clear()
         currencies.addAll(updatedCurrencies)
@@ -32,11 +32,11 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
             (holder as CurrencyViewHolder).bind(currencies[position], onCardClick)
 
     class CurrencyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(currency: Currency, onCardClick: ((currencyName: String) -> Unit)?) {
+        fun bind(currency: CurrencyCardViewData, onCardClick: ((currencyName: String) -> Unit)?) {
             val orderCardView = itemView as CurrencyCardView
             orderCardView.bind(currency)
             orderCardView.setOnClickListener {
-                onCardClick?.invoke(currency.name)
+                onCardClick?.invoke(currency.title)
             }
         }
     }

@@ -1,11 +1,11 @@
 package com.example.revolut_test.util
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.revolut_test.model.Currency
+import com.example.revolut_test.view.CurrencyCardViewData
 
 class CurrenciesDiffCallback(
-    private val oldItems: List<Currency>,
-    private val newItems: List<Currency>
+    private val oldItems: List<CurrencyCardViewData>,
+    private val newItems: List<CurrencyCardViewData>
 ) : DiffUtil.Callback() {
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =

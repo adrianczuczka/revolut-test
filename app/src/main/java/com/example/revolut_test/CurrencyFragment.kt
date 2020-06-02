@@ -29,8 +29,8 @@ class CurrencyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         currencyFragmentRecyclerView.layoutManager = LinearLayoutManager(context)
         currencyFragmentRecyclerView.adapter = currencyAdapter
-        viewModel.getCurrencies("EUR").observe(this, Observer {
-            currencyAdapter.update(it)
+        viewModel.getCurrencies("EUR").observe(this, Observer { list ->
+            currencyAdapter.update(list.map { currency -> viewModel.transformCurrencies(currency) })
         })
     }
 

@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
 import com.example.revolut_test.R
-import com.example.revolut_test.model.Currency
 import kotlinx.android.synthetic.main.view_currency_card_merge.view.*
 
 class CurrencyCardView @JvmOverloads constructor(
@@ -20,9 +20,9 @@ class CurrencyCardView @JvmOverloads constructor(
                 .inflate(R.layout.view_currency_card_merge, this, true)
     }
 
-    fun bind(currency: Currency) {
-        val androidCurrency: java.util.Currency = java.util.Currency.getInstance(currency.name)
-        currencyCardViewTitleTextView.text = androidCurrency.displayName
-        currencyCardViewSubtitleTextView.text = currency.name
+    fun bind(data: CurrencyCardViewData) {
+        currencyCardViewTitleTextView.text = data.title
+        currencyCardViewSubtitleTextView.text = data.subtitle
+        Glide.with(this).load(data.flag).into(currencyCardViewCountryImageView)
     }
 }
