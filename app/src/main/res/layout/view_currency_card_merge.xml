@@ -46,7 +46,6 @@
         android:layout_marginEnd="@dimen/margin_medium"
         android:layout_marginBottom="@dimen/margin_medium"
         android:importantForAutofill="no"
-        android:hint="@string/content_description_view_currency_card_edit_text"
         android:inputType="numberDecimal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -24,7 +24,7 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-            CurrencyViewHolder(parent.inflate(R.layout.view_currency_card))
+            CurrencyViewHolder(parent.inflate(R.layout.view_currency_card_impl))
 
     override fun getItemCount(): Int = currencies.size
 

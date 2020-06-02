@@ -1,4 +1,4 @@
-package com.example.revolut_test.viewmodel.mainactivity
+package com.example.revolut_test.viewmodel.currencyfragment
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
@@ -21,12 +21,12 @@ private const val FIRST_VALUE = 1.0
 private const val SECOND_VALUE = 2.0
 private const val THIRD_VALUE = 3.0
 
-class MainActivityViewModelTest {
+class CurrencyViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModel: CurrencyViewModel
 
     private val observer: Observer<List<Currency>> = mock()
 
@@ -42,7 +42,7 @@ class MainActivityViewModelTest {
 
     @Before
     fun `set up`() {
-        viewModel = MainActivityViewModel(getCurrenciesUseCase)
+        viewModel = CurrencyViewModel(getCurrenciesUseCase)
     }
 
     @Test

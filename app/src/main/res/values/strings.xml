@@ -1,4 +1,3 @@
 <resources>
     <string name="app_name">revolut-test</string>
-    <string name="content_description_view_currency_card_edit_text">The amount of this currency to compare to other currencies.</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.revolut_test.viewmodel.mainactivity
+package com.example.revolut_test.viewmodel.currencyfragment
 
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,7 @@ import com.example.revolut_test.usecase.GetCurrenciesUseCase
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
-class MainActivityViewModel @Inject constructor(
+class CurrencyViewModel @Inject constructor(
     private val getCurrenciesUseCase: GetCurrenciesUseCase
 ) : ViewModel() {
 
