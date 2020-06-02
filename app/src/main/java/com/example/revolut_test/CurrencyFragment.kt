@@ -27,7 +27,9 @@ class CurrencyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        currencyFragmentRecyclerView.layoutManager = LinearLayoutManager(context)
+        val layoutManager = LinearLayoutManager(context)
+        currencyAdapter.onCardClick = { layoutManager.scrollToPositionWithOffset(0, 0) }
+        currencyFragmentRecyclerView.layoutManager = layoutManager
         currencyFragmentRecyclerView.adapter = currencyAdapter
         viewModel.getCurrencies("EUR").observe(this, Observer { list ->
             currencyAdapter.update(list.map { currency -> viewModel.transformCurrencies(currency) })
