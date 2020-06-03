@@ -29,7 +29,8 @@ class CurrencyCardView @JvmOverloads constructor(
         amount: Double?,
         onCardClick: (CurrencyCardViewData) -> Unit,
         onAmountUpdated: (Double?) -> Unit,
-        isHighlighted: Boolean
+        isHighlighted: Boolean,
+        amountIfHighlighted: Double?
     ) {
         currencyCardViewTitleTextView.text = data.title
         currencyCardViewSubtitleTextView.text = data.subtitle
@@ -38,7 +39,11 @@ class CurrencyCardView @JvmOverloads constructor(
             currencyCardViewAmountEditText.requestFocus()
         }
         currencyCardViewAmountEditText.removeTextChangedListener(textWatcher)
-        currencyCardViewAmountEditText.setText(amount?.toString() ?: "")
+        if (!isHighlighted) {
+            currencyCardViewAmountEditText.setText(amount?.toString() ?: "")
+        } else if (currencyCardViewAmountEditText.text.isEmpty()) {
+            currencyCardViewAmountEditText.setText(amountIfHighlighted?.toString() ?: "")
+        }
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

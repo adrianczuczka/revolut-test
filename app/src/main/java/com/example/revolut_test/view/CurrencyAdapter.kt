@@ -10,6 +10,10 @@ import javax.inject.Inject
 
 class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    init {
+        setHasStableIds(true)
+    }
+
     private val currencies: LinkedList<CurrencyCardViewData> = LinkedList()
     private val currentAmounts: LinkedList<Double?> = LinkedList()
     private var highlightedItemWithOldIndex: Pair<CurrencyCardViewData?, Int> = null to -1
@@ -40,10 +44,11 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
 
     override fun getItemCount(): Int = currencies.size
 
+    override fun getItemId(position: Int): Long {
+        return currencies[position].title.hashCode().toLong()
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (position == 0) {
-            holder.setIsRecyclable(false)
-        }
         (holder as CurrencyViewHolder).bind(
                 currency = currencies[position],
                 amount = currentAmounts[position],
@@ -51,7 +56,8 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
                 onAmountUpdated = {
                     highlightedAmount = it
                 },
-                isHighlighted = position == 0
+                isHighlighted = position == 0,
+                amountIfHighlighted = highlightedAmount
         )
     }
 
@@ -82,10 +88,11 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
             amount: Double?,
             onCardClick: ((data: CurrencyCardViewData) -> Unit),
             onAmountUpdated: (Double?) -> Unit,
-            isHighlighted: Boolean
+            isHighlighted: Boolean,
+            amountIfHighlighted: Double?
         ) {
             val orderCardView = itemView as CurrencyCardView
-            orderCardView.bind(currency, amount, onCardClick, onAmountUpdated, isHighlighted)
+            orderCardView.bind(currency, amount, onCardClick, onAmountUpdated, isHighlighted, amountIfHighlighted)
         }
     }
 }
