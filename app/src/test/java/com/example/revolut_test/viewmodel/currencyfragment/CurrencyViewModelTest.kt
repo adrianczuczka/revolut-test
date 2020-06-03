@@ -14,10 +14,13 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.schedulers.TestScheduler
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+private const val INTERVAL_IN_SECONDS = 1L
 private const val TEST_BASE = "EUR"
 private const val FIRST_NAME = "EUR"
 private const val SECOND_NAME = "USD"
@@ -55,7 +58,11 @@ class CurrencyViewModelTest {
         on { transform(firstCurrency) } doReturn currencyData
     }
 
-    private val intervalUseCase: IntervalUseCase = mock()
+    private val intervalUseCase: IntervalUseCase = mock {
+        on { execute(INTERVAL_IN_SECONDS) } doReturn Flowable.just(1L)
+    }
+
+    private val scheduler: Scheduler = TestScheduler()
 
     @Before
     fun `set up`() {
@@ -66,9 +73,10 @@ class CurrencyViewModelTest {
     fun `getCurrencies - should return liveData with currency list`() {
         viewModel.getCurrencies(TEST_BASE).observeForever(observer)
 
+        verify(intervalUseCase).execute(INTERVAL_IN_SECONDS)
         verify(observer).onChanged(currencies)
         verify(getCurrenciesUseCase).execute(TEST_BASE)
-        verifyNoMoreInteractions(observer, getCurrenciesUseCase)
+        verifyNoMoreInteractions(observer, getCurrenciesUseCase, intervalUseCase)
         verifyZeroInteractions(currencyToCurrencyCardViewDataTransformer)
     }
 

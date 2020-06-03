@@ -9,6 +9,8 @@ import com.example.revolut_test.usecase.IntervalUseCase
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
+private const val INTERVAL_IN_SECONDS = 1L
+
 class CurrencyViewModel @Inject constructor(
     private val getCurrenciesUseCase: GetCurrenciesUseCase,
     private val currencyToCurrencyCardViewDataTransformer: CurrencyToCurrencyCardViewDataTransformer,
@@ -16,7 +18,7 @@ class CurrencyViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun getCurrencies(base: String) = LiveDataReactiveStreams.fromPublisher(
-            intervalUseCase.execute(1).flatMap {
+            intervalUseCase.execute(INTERVAL_IN_SECONDS).flatMap {
                 getCurrenciesUseCase.execute(base).subscribeOn(Schedulers.io())
             }
     )
