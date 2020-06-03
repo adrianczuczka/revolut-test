@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.example.revolut_test.model.Currency
 import com.example.revolut_test.transformer.CurrencyToCurrencyCardViewDataTransformer
 import com.example.revolut_test.usecase.GetCurrenciesUseCase
+import com.example.revolut_test.usecase.IntervalUseCase
 import com.example.revolut_test.view.CurrencyCardViewData
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.doReturn
@@ -54,9 +55,11 @@ class CurrencyViewModelTest {
         on { transform(firstCurrency) } doReturn currencyData
     }
 
+    private val intervalUseCase: IntervalUseCase = mock()
+
     @Before
     fun `set up`() {
-        viewModel = CurrencyViewModel(getCurrenciesUseCase, currencyToCurrencyCardViewDataTransformer)
+        viewModel = CurrencyViewModel(getCurrenciesUseCase, currencyToCurrencyCardViewDataTransformer, intervalUseCase)
     }
 
     @Test
