@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.revolut_test.R
 import com.example.revolut_test.util.inflate
+import com.example.revolut_test.util.round
 import java.util.LinkedList
 import javax.inject.Inject
 
@@ -33,7 +34,7 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
                 currentAmounts.addFirst(highlightedAmount)
             } else {
                 currencies += it
-                currentAmounts += highlightedAmount?.div(highlightedItemWithOldIndex.first!!.rate)?.times(it.rate)
+                currentAmounts += highlightedAmount?.div(highlightedItemWithOldIndex.first!!.rate)?.times(it.rate)?.round(2)
             }
         }
         notifyDataSetChanged()
