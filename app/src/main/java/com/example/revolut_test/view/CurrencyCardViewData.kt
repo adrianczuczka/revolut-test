@@ -8,4 +8,8 @@ data class CurrencyCardViewData(
     val rate: Double,
     @DrawableRes
     val flag: Int
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        return other is CurrencyCardViewData && other.title == title
+    }
+}

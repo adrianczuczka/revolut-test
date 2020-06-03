@@ -8,10 +8,6 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.example.revolut_test.R
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
-import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.android.synthetic.main.view_currency_card_merge.view.*
 
 class CurrencyCardView @JvmOverloads constructor(
@@ -20,7 +16,6 @@ class CurrencyCardView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attributeSet, defStyleAttr) {
 
-    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private var textWatcher: TextWatcher? = null
 
     init {
@@ -29,36 +24,27 @@ class CurrencyCardView @JvmOverloads constructor(
                 .inflate(R.layout.view_currency_card_merge, this, true)
     }
 
-    fun bind(data: CurrencyCardViewData, onCardClick: (CurrencyCardViewData) -> Unit, amountsUpdater: BehaviorSubject<String>) {
+    fun bind(
+        data: CurrencyCardViewData,
+        amount: Double?,
+        onCardClick: (CurrencyCardViewData) -> Unit,
+        onAmountUpdated: (Double?) -> Unit,
+        isHighlighted: Boolean
+    ) {
         currencyCardViewTitleTextView.text = data.title
         currencyCardViewSubtitleTextView.text = data.subtitle
         setOnClickListener {
             onCardClick.invoke(data)
             currencyCardViewAmountEditText.requestFocus()
         }
-        compositeDisposable.add(
-                amountsUpdater
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe {
-                            val amount = it.toDoubleOrNull()
-                            if (!currencyCardViewAmountEditText.hasFocus()) {
-                                currencyCardViewAmountEditText.setText(
-                                        if (amount != null) {
-                                            (amount * data.rate).toString()
-                                        } else {
-                                            ""
-                                        }
-                                )
-                            }
-                        }
-        )
+        currencyCardViewAmountEditText.removeTextChangedListener(textWatcher)
+        currencyCardViewAmountEditText.setText(amount?.toString() ?: "")
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val adjustedAmount = p0?.toString()?.toDoubleOrNull()?.div(data.rate)
-                if (currencyCardViewAmountEditText.hasFocus()) {
-                    amountsUpdater.onNext(adjustedAmount?.toString() ?: "")
+                if (isHighlighted) {
+                    val inputtedAmount = p0?.toString()?.toDoubleOrNull()
+                    onAmountUpdated(inputtedAmount)
                 }
             }
 
@@ -66,5 +52,10 @@ class CurrencyCardView @JvmOverloads constructor(
         }
         currencyCardViewAmountEditText.addTextChangedListener(textWatcher)
         Glide.with(this).load(data.flag).into(currencyCardViewCountryImageView)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        currencyCardViewAmountEditText.removeTextChangedListener(textWatcher)
     }
 }
