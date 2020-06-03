@@ -32,7 +32,7 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
                 currentAmounts += highlightedAmount?.div(highlightedItemWithOldIndex.first!!.rate)?.times(it.rate)
             }
         }
-        notifyItemRangeChanged(1, currencies.size - 1)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -56,24 +56,24 @@ class CurrencyAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.
     }
 
     private fun focusItem(data: CurrencyCardViewData) {
-        highlightedItemWithOldIndex.first?.let { it ->
-            val index = currencies.indexOf(it)
-            currencies.removeAt(index)
-            currentAmounts.removeAt(index)
-            currencies.add(highlightedItemWithOldIndex.second, it)
-            notifyItemMoved(0, highlightedItemWithOldIndex.second)
+        highlightedItemWithOldIndex.first?.let { highlightedData ->
+            moveItem(highlightedData, highlightedItemWithOldIndex.second)
         }
-        val currencyIndex = currencies.indexOf(data)
-        highlightedItemWithOldIndex = data to currencyIndex
-        highlightedAmount = currentAmounts[currencyIndex]
-        val tempIndex = currencies.indexOf(data)
-        currencies.remove(data)
-        currentAmounts.removeAt(tempIndex)
-        currencies.addFirst(data)
-        currentAmounts.addFirst(highlightedAmount)
-        notifyItemMoved(tempIndex, 0)
+        val index = currencies.indexOf(data)
+        highlightedItemWithOldIndex = data to index
+        highlightedAmount = currentAmounts[index]
+        moveItem(data, 0)
         notifyItemChanged(0)
-        onCardClick?.invoke()
+    }
+
+    private fun moveItem(data: CurrencyCardViewData, index: Int) {
+        val tempIndex = currencies.indexOf(data)
+        val amount = currentAmounts[tempIndex]
+        currencies.removeAt(tempIndex)
+        currentAmounts.removeAt(tempIndex)
+        currencies.add(index, data)
+        currentAmounts.add(index, amount)
+        notifyItemMoved(tempIndex, index)
     }
 
     class CurrencyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
